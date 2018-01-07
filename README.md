@@ -1,8 +1,8 @@
 # Retropie-open-OSD
 A powerful, informative, native, efficient, super cool, on-screen display software for Raspberry Pi.
 
-![demo](/images/test1.jpg)
-![demo2](/images/test.jpg)
+![demo](/images/test1.png)
+![demo2](/images/test.png)
 
 This OSD is designed to be fast and informative, it uses low level gpu system calls as well as signals and interrupts to keep the resources consuption low.
 The software is intendeed for mobile application as it features:
