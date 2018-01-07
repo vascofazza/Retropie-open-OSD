@@ -15,6 +15,8 @@ The software is intendeed for mobile application as it features:
 
 ## Build instructions:
 
+* git clone --recursive https://github.com/vascofazza/Retropie-open-OSD.git
+
 * make
 
 ## How to use it:
