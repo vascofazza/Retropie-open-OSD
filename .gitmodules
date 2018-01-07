@@ -1,0 +1,3 @@
+[submodule "osd/lib"]
+	path = osd/lib
+	url = https://github.com/vascofazza/raspidmx.git
