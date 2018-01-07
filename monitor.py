@@ -202,7 +202,7 @@ def getCPUtemperature():
     return float(res.replace("temp=","").replace("'C\n",""))
 
 # Do a shutdown
-def doShutdown():
+def doShutdown(channel = None):
     ser.write('s7')#shuts the screen off
     ser.flush()
     os.system("sudo poweroff")
@@ -232,6 +232,7 @@ brightness = -1
 info = False
 volt = -1
 wifi = 2
+charge = 0
 
 condition = threading.Condition()
 
@@ -240,6 +241,7 @@ def reading():
     global volt
     global info
     global wifi
+    global charge
     while(1):
         readval = ser.readline().strip('\n')
         condition.acquire()
@@ -259,16 +261,27 @@ def reading():
             volt = readVoltage(int(readval[1:]))
         if info:
             condition.notify()
-        updateOSD(volt, bat, temp, wifi, brightness, info, checkCharge())
+        updateOSD(volt, bat, temp, wifi, brightness, info, charge)
         condition.release()
 
 reading_thread = thread.start_new_thread(reading, ())
+
+def lambdaCharge(channel):
+    condition.acquire()
+    condition.notify();
+    condition.release();
+
+#interrupts
+GPIO.add_event_detect(pi_shdn, GPIO.FALLING, callback=doShutdown, bouncetime=500)
+GPIO.add_event_detect(pi_charging, GPIO.BOTH, callback=lambdaCharge, bouncetime=100)
+GPIO.add_event_detect(pi_charged, GPIO.FALLING, callback=lambdaCharge, bouncetime=100)
 
 # Main loop
 try:
     print "STARTED!"
     while 1:
-        checkShdn()
+        #checkShdn()
+        charge = checkCharge()
         condition.acquire()
         getVoltage()
         bat = getVoltagepercent(volt)
