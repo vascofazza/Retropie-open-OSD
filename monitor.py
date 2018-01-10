@@ -25,7 +25,7 @@ import RPi.GPIO as GPIO
 import time
 import os,signal,sys
 import serial
-from subprocess import Popen, PIPE, check_output
+from subprocess import Popen, PIPE, check_output, check_call
 import re
 import logging
 import logging.handlers
@@ -205,7 +205,10 @@ def getCPUtemperature():
 def doShutdown(channel = None):
     ser.write('s7')#shuts the screen off
     ser.flush()
-    os.system("sudo poweroff")
+    time.sleep(1)
+    check_call("sudo killall emulationstation", shell=True)
+    time.sleep(1)
+    check_call("sudo shutdown -h now", shell=True)
     try:
         sys.stdout.close()
     except:
@@ -295,5 +298,5 @@ try:
 #print 'WAKE'
 
 except KeyboardInterrupt:
-  GPIO.cleanup
-  osd_proc.terminate()
+    GPIO.cleanup
+    osd_proc.terminate()
