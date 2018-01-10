@@ -31,8 +31,6 @@
 #include <unistd.h>
 #include <time.h>
 #include <strings.h>
-
-#include "key.h"
 #include "font.h"
 #include "imageGraphics.h"
 #include "imageLayer.h"
@@ -328,7 +326,7 @@ int main(int argc, char *argv[])
     result = vc_dispmanx_update_submit_sync(update);
     assert(result == 0);
     
-    while (run)//keyPressed(NULL) == false)
+    while (run)
     {
         float batval = battery/100.f;
         {
@@ -387,10 +385,6 @@ int main(int argc, char *argv[])
     destroyImageLayer(&cimageLayer);
     result = vc_dispmanx_display_close(display);
     assert(result == 0);
-
-    //---------------------------------------------------------------------
-
-    keyboardReset();
 
     //---------------------------------------------------------------------
 
