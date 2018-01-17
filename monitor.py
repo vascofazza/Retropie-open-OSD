@@ -31,6 +31,7 @@ import logging
 import logging.handlers
 import thread
 import threading
+import signal
 
 # Config variables
 bin_dir         = '/home/pi/Retropie-open-OSD/'
@@ -245,6 +246,7 @@ def reading():
     global info
     global wifi
     global charge
+    time.sleep(1)
     while(1):
         readval = ser.readline().strip('\n')
         condition.acquire()
@@ -274,10 +276,18 @@ def lambdaCharge(channel):
     condition.notify();
     condition.release();
 
+def exit_gracefully(signum=None,frame=None):
+    GPIO.cleanup
+    osd_proc.terminate()
+    sys.exit(0)
+
 #interrupts
 GPIO.add_event_detect(pi_shdn, GPIO.FALLING, callback=doShutdown, bouncetime=500)
 GPIO.add_event_detect(pi_charging, GPIO.BOTH, callback=lambdaCharge, bouncetime=100)
 GPIO.add_event_detect(pi_charged, GPIO.FALLING, callback=lambdaCharge, bouncetime=100)
+
+signal.signal(signal.SIGINT, exit_gracefully)
+signal.signal(signal.SIGTERM, exit_gracefully)
 
 # Main loop
 try:
@@ -298,5 +308,4 @@ try:
 #print 'WAKE'
 
 except KeyboardInterrupt:
-    GPIO.cleanup
-    osd_proc.terminate()
+    exit_gracefully()
