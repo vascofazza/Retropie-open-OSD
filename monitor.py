@@ -60,7 +60,7 @@ dacres = 33.0
 dacmax = 1023.0
 
 batt_threshold = 4
-batt_full = 410
+batt_full = 420
 batt_low = 330
 batt_shdn = 320
 
@@ -204,7 +204,7 @@ def getCPUtemperature():
 
 # Do a shutdown
 def doShutdown(channel = None):
-    ser.write('s7')#shuts the screen off
+    ser.write('s0')#shuts the screen off
     ser.flush()
     time.sleep(1)
     check_call("sudo killall emulationstation", shell=True)
@@ -237,6 +237,7 @@ info = False
 volt = -1
 wifi = 2
 charge = 0
+bat = 100
 
 condition = threading.Condition()
 
@@ -246,6 +247,7 @@ def reading():
     global info
     global wifi
     global charge
+    global bat
     time.sleep(1)
     while(1):
         readval = ser.readline().strip('\n')
@@ -264,9 +266,12 @@ def reading():
             info = False
         elif readval[0] == 'b':
             volt = readVoltage(int(readval[1:]))
+            if charge:
+                volt-=20
         if info:
             condition.notify()
-        updateOSD(volt, bat, temp, wifi, brightness, info, charge)
+        bat = getVoltagepercent(volt)
+	updateOSD(volt, bat, temp, wifi, brightness, info, charge)
         condition.release()
 
 reading_thread = thread.start_new_thread(reading, ())
@@ -297,7 +302,6 @@ try:
         charge = checkCharge()
         condition.acquire()
         getVoltage()
-        bat = getVoltagepercent(volt)
         temp = getCPUtemperature()
         wifi = readModeWifi()
         if brightness < 0:
