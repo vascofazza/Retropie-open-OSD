@@ -1,4 +1,4 @@
-TARGETS=osd/lib \
+TARGETS=osd/lib/lib \
 osd
 
 default :all
