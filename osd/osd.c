@@ -180,7 +180,7 @@ void updateInfo(IMAGE_LAYER_T *infoLayer)
     int x = 1, y = 1;
     drawStringRGB(x+1, y, buffer, &backgroundColour, image);
     drawStringRGB(x-1, y, buffer, &backgroundColour, image);    
-drawStringRGB(x, y+1, buffer, &backgroundColour, image);    
+    drawStringRGB(x, y+1, buffer, &backgroundColour, image);    
     drawStringRGB(x, y-1, buffer, &backgroundColour, image);
     drawStringRGB(x, y, buffer, &textColour, image);
     changeSourceAndUpdateImageLayer(infoLayer);
