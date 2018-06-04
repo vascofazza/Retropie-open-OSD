@@ -54,7 +54,7 @@ volatile bool run = true;
 //-------------------------------------------------------------------------
 
 static RGBA8_T clearColor = {0,0,0,0};
-static RGBA8_T backgroundColour = { 0, 0, 0, 100 };
+static RGBA8_T backgroundColour = { 0, 0, 0, 120 };
 static RGBA8_T textColour = { 255, 255, 255, 255 };
 static RGBA8_T greenColour = { 0, 255, 0, 200 };
 static RGBA8_T redColour = { 255, 0, 0, 200 };
@@ -173,11 +173,15 @@ void updateInfo(IMAGE_LAYER_T *infoLayer)
     char buffer[128];
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    snprintf(buffer, sizeof(buffer),"%04d-%02d-%02d %02d:%02d:%02d\nTemperature: %.1f\x5\x43\nBrigthness:  %d/%d\nBattery:     %d%%\nVoltage:     %.2fV\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, temp, brightness, BRIGHTNESS_MAX, battery, voltage/100.f);
+    snprintf(buffer, sizeof(buffer),"%04d/%02d/%02d %02d:%02d:%02d\nTemperature: %.1f\x5\x43\nBrigthness:  %d/%d\nBattery:     %d%%\nVoltage:     %.2fV\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, temp, brightness, BRIGHTNESS_MAX, battery, voltage/100.f);
 
     IMAGE_T *image = &(infoLayer->image);
-    clearImageRGB(image, &backgroundColour);
+    clearImageRGB(image, &clearColor);
     int x = 1, y = 1;
+    drawStringRGB(x+1, y, buffer, &backgroundColour, image);
+    drawStringRGB(x-1, y, buffer, &backgroundColour, image);    
+drawStringRGB(x, y+1, buffer, &backgroundColour, image);    
+    drawStringRGB(x, y-1, buffer, &backgroundColour, image);
     drawStringRGB(x, y, buffer, &textColour, image);
     changeSourceAndUpdateImageLayer(infoLayer);
 }
@@ -390,4 +394,5 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
 
